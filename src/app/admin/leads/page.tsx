@@ -87,6 +87,12 @@ export default function LeadsPage() {
   };
 
   useEffect(() => {
+    // Fetch leads when the component mounts
+    if(!user) {
+      alert('Please login to view leads.');
+      window.location.href = '/login'; // Redirect to login page
+      return;
+    }
     fetchLeads();
   }, []);
 
@@ -135,6 +141,8 @@ export default function LeadsPage() {
       alert('Error deleting lead');
     }
   };
+
+  // Removed unused redirectToLogin function
 
   // Removed unused openUpdatePopup function
 
