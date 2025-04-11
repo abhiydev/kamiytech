@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useUser, UserButton } from '@clerk/nextjs'
-import { useState, useEffect, useRef, MouseEvent } from 'react'
+import { useState, useEffect, useRef, JSX } from 'react'
 import { usePathname } from 'next/navigation'
 import { IoIosArrowDropdownCircle } from 'react-icons/io'
 import { GrUserAdmin } from 'react-icons/gr'
@@ -38,22 +38,25 @@ export default function Navbar(): JSX.Element {
 
   // Close mobile menu when clicking outside its panel
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent<Document>) {
+    function handleClickOutside(event: globalThis.MouseEvent) {
       if (
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target as Node)
       ) {
-        setIsMobileMenuOpen(false)
-        setIsUserDropDownOpen(false)
+        setIsMobileMenuOpen(false);
+        setIsUserDropDownOpen(false);
       }
     }
     if (isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside as any)
+      document.addEventListener('mousedown', handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside as any)
+      document.removeEventListener('mousedown', handleClickOutside);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside as any)
-  }, [isMobileMenuOpen])
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
+  
 
   const isActive = (path: string): boolean => pathname === path
 

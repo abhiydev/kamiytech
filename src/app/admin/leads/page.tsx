@@ -94,7 +94,7 @@ export default function LeadsPage() {
       return;
     }
     fetchLeads();
-  }, []);
+  }, [user]);
 
   // Handle form change for add form
   const handleChange = (
