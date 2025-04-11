@@ -1,0 +1,75 @@
+'use client'
+import { useUser } from '@clerk/nextjs'
+import useStore from '../store/useStore'
+import { useEffect } from 'react'
+import Link from 'next/link'
+
+export default function UserProfile() {
+  const { user: clerkUser, isLoaded } = useUser()
+  const { user, isSignedIn, setUser, clearUser } = useStore()
+
+  useEffect(() => {
+    if (isLoaded) {
+      if (clerkUser) {
+        setUser(clerkUser)
+      } else {
+        clearUser()
+      }
+    }
+  }, [clerkUser, isLoaded, setUser, clearUser])
+
+  if (!isLoaded) {
+    return <div className="text-primary">Loading...</div>
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="flex flex-col items-center gap-4 p-4">
+        <h2 className="text-2xl font-bold text-primary">Welcome to KamiyTech</h2>
+        <p className="text-secondary text-center mb-4">Please sign in to access your profile</p>
+        <div className="flex gap-4">
+          <Link 
+            href="/sign-in" 
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+          >
+            Sign In
+          </Link>
+          <Link 
+            href="/sign-up" 
+            className="px-6 py-2 bg-secondary text-white rounded-lg hover:bg-primary transition-colors"
+          >
+            Sign Up
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-primary mb-4">User Profile</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="text-secondary font-medium">Full Name</label>
+            <p className="text-foreground">{user?.fullName}</p>
+          </div>
+          <div>
+            <label className="text-secondary font-medium">Email</label>
+            <p className="text-foreground">{user?.primaryEmailAddress?.emailAddress}</p>
+          </div>
+          <div>
+            <label className="text-secondary font-medium">User ID</label>
+            <p className="text-foreground">{user?.id}</p>
+          </div>
+          <div>
+            <label className="text-secondary font-medium">Created At</label>
+            <p className="text-foreground">
+              {new Date(user?.createdAt || '').toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+} 
