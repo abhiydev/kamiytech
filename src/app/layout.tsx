@@ -8,6 +8,9 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: '/icon.png', // /public path
+  },
   title: "KamiyTech",
   description: "Your Digital Innovation Partner",
 };

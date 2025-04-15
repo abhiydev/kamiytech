@@ -3,68 +3,50 @@ import { Lead } from "@/app/db/models/leads";
 
 export async function POST(request: Request) {
   await dbConnect();
-
   // Get and log the incoming request body
   const body = await request.json();
+  
   console.log("📥 Incoming request body:", body);
 
-  // Destructure the fields from the body
-  const {
-    companyname,
-    name,
-    contact,
-    address,
-    area,
-    city,
-    country,
-    cat,
-    quality,
-    desc,
-    author,
-  } = body;
+  // Check if body is an array (bulk upload) or a single object
+  const leads = Array.isArray(body) ? body : [body];
+  const savedLeads = [];
+  const errors = [];
 
-  // Basic manual validation (return an error if required fields are missing)
-  if (!name || !contact || !area || !cat || !author) {
-    console.log("❌ Missing required fields");
-    return new Response(
-      JSON.stringify({ error: "Missing required fields: name, contact, area, cat, and author are required" }),
-      { status: 400 }
-    );
+  for (const leadData of leads) {
+    const { companyname, name, contact, address, area, city, country, cat, quality, desc, author } = leadData;
+
+    // Basic manual validation for each lead
+    if (!name || !contact || !area || !cat || !author) {
+      console.log("❌ Missing required fields in one lead:", leadData);
+      errors.push({ lead: leadData, error: "Missing required fields: name, contact, area, cat, and author are required" });
+      // Skip this lead (or decide to throw an error instead)
+      continue;
+    }
+
+    try {
+      const lead = new Lead({ companyname, name, contact, address, area, city, country, cat, quality, desc, author });
+      console.log("📝 Lead to be saved:", lead.toObject());
+      await lead.save();
+      console.log("✅ Lead saved successfully!");
+      savedLeads.push(lead);
+    } catch (error) {
+      console.error("🔥 Error creating lead:", error);
+      errors.push({ lead: leadData, error: "Error creating lead" });
+      // Continue processing the remaining leads
+    }
   }
 
-  console.log("✅ Data ready to save:", body);
-  console.log("💾 Final lead to save in DB:", {
-    companyname, name, contact, address, area, city, country, cat, quality, desc, author
-  });  
-
-  try {
-    const lead = new Lead({
-      companyname,
-      name,
-      contact,
-      address,
-      area,
-      city,
-      country,
-      cat,
-      quality,
-      desc,
-      author,
-    });
-
-    console.log("📝 Lead to be saved:", lead.toObject());
-    await lead.save();
-    console.log("✅ Lead saved successfully!");
-    return new Response(JSON.stringify({ message: "Lead added successfully", author }), { status: 201 });
-  } catch (error) {
-    console.error("🔥 Error creating lead:", error);
-    return new Response(JSON.stringify({ error: "Error creating lead" }), { status: 500 });
-  }
+  const responsePayload = {
+    message: "Bulk upload completed",
+    savedLeads,
+    errors,
+  };
+  return new Response(JSON.stringify(responsePayload), { status: errors.length > 0 ? 207 : 201 });
 }
 
 export async function GET() {
   await dbConnect();
-
   try {
     const leads = await Lead.find();
     return new Response(JSON.stringify(leads), { status: 200 });
@@ -76,7 +58,6 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   await dbConnect();
-
   const body = await request.json();
   const { id, ...updateData } = body;
 
@@ -98,7 +79,6 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   await dbConnect();
-
   const body = await request.json();
   const { id } = body;
 
