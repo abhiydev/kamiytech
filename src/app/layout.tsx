@@ -1,5 +1,4 @@
-// app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -26,10 +25,6 @@ export const metadata: Metadata = {
   authors: [{ name: "KamiyTech", url: "https://kamiytech.com" }],
   creator: "KamiyTech",
   publisher: "KamiyTech",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
   openGraph: {
     title: "KamiyTech – Your Digital Innovation Partner",
     description:
@@ -64,6 +59,12 @@ export const metadata: Metadata = {
       "hi-IN": "https://kamiytech.com/hi",
     },
   },
+};
+
+// ✅ Fix viewport moved outside metadata
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
