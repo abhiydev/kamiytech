@@ -43,20 +43,19 @@ export default function Navbar(): JSX.Element {
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target as Node)
       ) {
-        setIsMobileMenuOpen(false);
-        setIsUserDropDownOpen(false);
+        setIsMobileMenuOpen(false)
+        setIsUserDropDownOpen(false)
       }
     }
     if (isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside)
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside)
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isMobileMenuOpen]);
-  
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMobileMenuOpen])
 
   const isActive = (path: string): boolean => pathname === path
 
@@ -66,6 +65,7 @@ export default function Navbar(): JSX.Element {
       aria-label="Main Navigation"
       className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-md text-gray-900 font-sans"
     >
+      {/* Container with max-width */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
@@ -109,9 +109,12 @@ export default function Navbar(): JSX.Element {
                   <UserButton
                     appearance={{
                       elements: {
-                        avatarBox: 'w-10 h-10 transition-transform duration-300 hover:scale-105',
-                        userButtonPopoverCard: 'bg-white shadow-lg border border-gray-200',
-                        userButtonPopoverActionButton: 'text-gray-600 hover:text-blue-600'
+                        avatarBox:
+                          'w-10 h-10 transition-transform duration-300 hover:scale-105',
+                        userButtonPopoverCard:
+                          'bg-white shadow-lg border border-gray-200',
+                        userButtonPopoverActionButton:
+                          'text-gray-600 hover:text-blue-600'
                       }
                     }}
                   />
@@ -203,7 +206,7 @@ export default function Navbar(): JSX.Element {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300  ${
+        className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300 ${
           isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
         aria-hidden={!isMobileMenuOpen}
@@ -214,11 +217,11 @@ export default function Navbar(): JSX.Element {
           onClick={toggleMobileMenu}
         />
 
-        {/* Slide-in Menu Panel */}
+        {/* Slide-in Mobile Menu Panel */}
         <div
           ref={mobileMenuRef}
-          className={`absolute top-0 right-0 h-full w-full max-w-sm bg-white shadow-xl transform transition-transform duration-300 ${
-            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          className={`fixed top-0 right-0 h-full w-[90vw] max-w-sm bg-white shadow-xl transform transition-transform duration-300 ${
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-[100vw]'
           }`}
         >
           <div className="flex justify-between items-center px-4 h-16 border-b border-gray-200 bg-white">
@@ -283,7 +286,6 @@ export default function Navbar(): JSX.Element {
               </div>
             ) : (
               <div className="px-2 bg-white rounded-xl shadow-md">
-                {/* Toggleable mobile dropdown for user actions */}
                 <button
                   onClick={toggleUserDropDown}
                   className="flex items-center justify-between w-full focus:outline-none"
