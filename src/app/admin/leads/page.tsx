@@ -6,6 +6,7 @@ import api from '@/lib/axios';
 import Loader from '@/components/Loader';
 import { IoIosSearch, IoMdAdd } from 'react-icons/io';
 import { FaFilter, FaEllipsisV } from 'react-icons/fa';
+import { redirect } from 'next/navigation';
 
 interface Lead {
   _id: string;
@@ -420,6 +421,7 @@ export default function LeadsPage() {
                   <span className="font-semibold">Desc:</span> {lead.desc || 'N/A'}
                 </p>
               </div>
+              <div className='flex-grow'>
               <div className="mt-4 border-t border-gray-700 pt-2">
                 <p className="text-xs text-gray-500">
                   <span className="font-semibold">Created:</span> {formatDate(lead.createdAt)}
@@ -430,6 +432,20 @@ export default function LeadsPage() {
                 <p className="text-xs italic text-gray-500">
                   <span className="font-semibold">By:</span> {lead.author || 'Unknown'}
                 </p>
+              </div>
+              <div>
+                <button 
+                onClick={() => {
+                  setSelectedLeadId(lead._id);
+                  redirect(`/lead/${lead._id}`);
+                }}
+                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"  
+                aria-label="More details"
+                
+                >
+                  More Details
+                </button>
+              </div>
               </div>
 
               {/* Options Dropdown (3-dot button) */}

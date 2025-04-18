@@ -97,3 +97,4 @@ export async function DELETE(request: Request) {
     return new Response(JSON.stringify({ error: "Failed to delete lead" }), { status: 500 });
   }
 }
+

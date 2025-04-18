@@ -36,6 +36,7 @@ export default function Navbar(): JSX.Element {
     setIsUserDropDownOpen(false)
   }, [pathname])
 
+
   // Close mobile menu when clicking outside its panel
   useEffect(() => {
     function handleClickOutside(event: globalThis.MouseEvent) {
@@ -220,11 +221,11 @@ export default function Navbar(): JSX.Element {
         {/* Slide-in Mobile Menu Panel */}
         <div
           ref={mobileMenuRef}
-          className={`fixed top-0 right-0 h-full w-[90vw] max-w-sm bg-white shadow-xl transform transition-transform duration-300 ${
-            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-[100vw]'
+          className={`fixed top-0 right w-screen-0 h-full bg-white shadow-xl transform transition-transform duration-300 ${
+            isMobileMenuOpen ? '' : ''
           }`}
         >
-          <div className="flex justify-between items-center px-4 h-16 border-b border-gray-200 bg-white">
+          <div className="flex justify-between items-center px-4 h-16 border-b w-full border-gray-200 bg-white">
             <span className="text-xl font-semibold text-blue-600">Menu</span>
             <button
               onClick={toggleMobileMenu}
