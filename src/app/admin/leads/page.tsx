@@ -271,7 +271,9 @@ export default function LeadsPage() {
     }
   };
 
-  if (!isLoaded) return <Loader />;
+  if (!isLoaded) return (<div className="col-span-full flex items-center justify-center h-64">
+    <Loader />
+  </div>);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 relative">
@@ -389,7 +391,9 @@ export default function LeadsPage() {
       {/* Leads Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading ? (
-          <Loader />
+          <div className="col-span-full flex items-center justify-center h-64">
+            <Loader />
+          </div>
         ) : sortedLeads.length === 0 ? (
           <p className="col-span-full text-center text-gray-400 mt-10">No leads found.</p>
         ) : (
