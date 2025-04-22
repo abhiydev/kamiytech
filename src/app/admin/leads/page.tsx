@@ -6,7 +6,7 @@ import api from '@/lib/axios';
 import Loader from '@/components/Loader';
 import { IoIosSearch, IoMdAdd } from 'react-icons/io';
 import { FaFilter, FaEllipsisV } from 'react-icons/fa';
-import { redirect } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 interface Lead {
   _id: string;
@@ -31,11 +31,14 @@ export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // const router = useRouter();
+
   // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  // const [error, setError] = useState<object | null>(null);
 
   // Update Data state
   const [updateData, setUpdateData] = useState<Partial<Lead>>({});
@@ -77,6 +80,7 @@ export default function LeadsPage() {
     'Super Market',
     'Mp online',
     'Cafe & Restaurant',
+    "Other"
   ];
 
   // Set the author from the user data when loaded.
@@ -90,25 +94,25 @@ export default function LeadsPage() {
   const fetchLeads = useCallback(async () => {
     try {
       setIsLoading(true);
-      if (!user) {
-        alert('Please login to view leads.');
-        window.location.href = '/login';
-        return;
-      }
       const res = await api.get('/api/leads');
       setLeads(res.data);
     } catch (err) {
       console.error('Fetch error:', err);
-      alert('Failed to fetch leads');
+      // setError({
+      //  error: 'Failed to fetch leads',
+      //  message: 'Please try again.', 
+      // });
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (!user) {
-      alert('Please login to view leads.');
-      window.location.href = '/login';
+      // setError({
+      //   error: 'Unauthorized',
+      //   message: 'Please login to view leads or retry.',
+      // });
       return;
     }
     fetchLeads();
@@ -422,22 +426,22 @@ export default function LeadsPage() {
                 </p>
               </div>
               <div className='flex-grow'>
-              <div className="mt-4 border-t border-gray-700 pt-2">
-                <p className="text-xs text-gray-500">
-                  <span className="font-semibold">Created:</span> {formatDate(lead.createdAt)}
-                </p>
-                <p className="text-xs text-gray-500">
-                  <span className="font-semibold">Updated:</span> {formatDate(lead.updatedAt)}
-                </p>
-                <p className="text-xs italic text-gray-500">
-                  <span className="font-semibold">By:</span> {lead.author || 'Unknown'}
-                </p>
-              </div>
-              <div>
+                <div className="mt-4 border-t border-gray-700 pt-2">
+                  <p className="text-xs text-gray-500">
+                    <span className="font-semibold">Created:</span> {formatDate(lead.createdAt)}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    <span className="font-semibold">Updated:</span> {formatDate(lead.updatedAt)}
+                  </p>
+                  <p className="text-xs italic text-gray-500">
+                    <span className="font-semibold">By:</span> {lead.author || 'Unknown'}
+                  </p>
+                </div>
+                {/* <div>
                 <button 
                 onClick={() => {
                   setSelectedLeadId(lead._id);
-                  redirect(`/lead/${lead._id}`);
+
                 }}
                 className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"  
                 aria-label="More details"
@@ -445,7 +449,7 @@ export default function LeadsPage() {
                 >
                   More Details
                 </button>
-              </div>
+              </div> */}
               </div>
 
               {/* Options Dropdown (3-dot button) */}
@@ -496,112 +500,191 @@ export default function LeadsPage() {
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-gray-900 p-8 rounded-lg shadow-lg max-w-lg w-full relative">
             <h2 className="text-2xl font-bold mb-4 border-b pb-2">Add New Lead</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="companyname"
-                  value={formData.companyname}
-                  onChange={handleChange}
-                  placeholder="Company Name"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
-                <select
-                  name="cat"
-                  value={formData.cat}
-                  onChange={handleChange}
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                >
-                  <option value="">Select Category</option>
-                  {categoryOptions.map((option) => (
-                    <option key={option} value={option.toLowerCase()}>{option}</option>
-                  ))}
-                </select>
+            <form className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-6 h-[60vh] overflow-y-auto">
+              {/* Company & Category */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-col">
+                  <label htmlFor="companyname" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Company Name
+                  </label>
+                  <input
+                    id="companyname"
+                    type="text"
+                    name="companyname"
+                    value={formData.companyname}
+                    onChange={handleChange}
+                    placeholder="Enter company name"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="cat" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Category
+                  </label>
+                  <select
+                    id="cat"
+                    name="cat"
+                    value={formData.cat}
+                    onChange={handleChange}
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  >
+                    <option value="" disabled>
+                      Select category
+                    </option>
+                    {categoryOptions.map((option) => (
+                      <option key={option} value={option.toLowerCase()}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Name"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
-                <input
-                  type="text"
-                  name="contact"
-                  value={formData.contact}
-                  onChange={handleChange}
-                  placeholder="Contact"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
+
+              {/* Contact Person & Phone */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="flex flex-col">
+                  <label htmlFor="name" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Contact Person
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter name"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="contact" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Phone/Email
+                  </label>
+                  <input
+                    id="contact"
+                    type="text"
+                    name="contact"
+                    value={formData.contact}
+                    onChange={handleChange}
+                    placeholder="Enter contact info"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Address"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded col-span-2 w-full"
-                />
-                <input
-                  type="text"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  placeholder="Area"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  placeholder="City"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  placeholder="Country"
-                  className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-                />
+
+              {/* Address Block */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div className="md:col-span-2 flex flex-col">
+                  <label htmlFor="address" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Address
+                  </label>
+                  <input
+                    id="address"
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Street address"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="area" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Area
+                  </label>
+                  <input
+                    id="area"
+                    type="text"
+                    name="area"
+                    value={formData.area}
+                    onChange={handleChange}
+                    placeholder="Area/Locality"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="city" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    City
+                  </label>
+                  <input
+                    id="city"
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="City"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="country" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Country
+                  </label>
+                  <input
+                    id="country"
+                    type="text"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    placeholder="Country"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  />
+                </div>
               </div>
-              <select
-                name="quality"
-                value={formData.quality}
-                onChange={handleChange}
-                className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-              >
-                {qualityOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <textarea
-                name="desc"
-                value={formData.desc}
-                onChange={handleChange}
-                placeholder="Description"
-                rows={3}
-                className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
-              />
-              <div className="flex justify-end gap-4 mt-4">
+
+              {/* Quality & Description */}
+              <div className="flex flex-col space-y-4">
+                <div className="flex flex-col">
+                  <label htmlFor="quality" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Lead Quality
+                  </label>
+                  <select
+                    id="quality"
+                    name="quality"
+                    value={formData.quality}
+                    onChange={handleChange}
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                  >
+                    <option value="" disabled>
+                      Select quality
+                    </option>
+                    {qualityOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col">
+                  <label htmlFor="desc" className="mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Description
+                  </label>
+                  <textarea
+                    id="desc"
+                    name="desc"
+                    rows={4}
+                    value={formData.desc}
+                    onChange={handleChange}
+                    placeholder="Additional details"
+                    className="px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end mt-6">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded"
+                  className="w-full sm:w-auto h-12 px-5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleAdd}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+                  className="w-full sm:w-auto h-12 px-5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium"
                 >
                   Add Lead
                 </button>

@@ -1,100 +1,136 @@
-import dbConnect from "@/app/db/dbConnect";
-import { Lead } from "@/app/db/models/leads";
+// app/api/leads/route.ts
+import { NextResponse } from 'next/server';
+import dbConnect from '@/app/db/dbConnect';
+import { Lead } from '@/app/db/models/leads';
 
 export async function POST(request: Request) {
   await dbConnect();
-  // Get and log the incoming request body
   const body = await request.json();
-  
-  console.log("📥 Incoming request body:", body);
+  const items = Array.isArray(body) ? body : [body];
+  const savedLeads: typeof Lead[] = [];
+  const errors: { lead: unknown; message: string }[] = [];
 
-  // Check if body is an array (bulk upload) or a single object
-  const leads = Array.isArray(body) ? body : [body];
-  const savedLeads = [];
-  const errors = [];
-
-  for (const leadData of leads) {
-    const { companyname, name, contact, address, area, city, country, cat, quality, desc, author } = leadData;
-
-    // Basic manual validation for each lead
+  for (const leadData of items) {
+    interface LeadData {
+      name: string;
+      contact: string;
+      area: string;
+      cat: string;
+      author: string;
+    }
+    const { name, contact, area, cat, author } = leadData as LeadData;
     if (!name || !contact || !area || !cat || !author) {
-      console.log("❌ Missing required fields in one lead:", leadData);
-      errors.push({ lead: leadData, error: "Missing required fields: name, contact, area, cat, and author are required" });
-      // Skip this lead (or decide to throw an error instead)
+      errors.push({
+        lead: leadData,
+        message: 'Missing required fields: name, contact, area, cat, author',
+      });
       continue;
     }
-
     try {
-      const lead = new Lead({ companyname, name, contact, address, area, city, country, cat, quality, desc, author });
-      console.log("📝 Lead to be saved:", lead.toObject());
-      await lead.save();
-      console.log("✅ Lead saved successfully!");
-      savedLeads.push(lead);
-    } catch (error) {
-      console.error("🔥 Error creating lead:", error);
-      errors.push({ lead: leadData, error: "Error creating lead" });
-      // Continue processing the remaining leads
+      const created = await Lead.create(leadData);
+      savedLeads.push(created);
+    } catch (err: unknown) {
+      errors.push({
+        lead: leadData,
+        message: err instanceof Error ? err.message : 'Error creating lead',
+      });
     }
   }
 
-  const responsePayload = {
-    message: "Bulk upload completed",
-    savedLeads,
-    errors,
-  };
-  return new Response(JSON.stringify(responsePayload), { status: errors.length > 0 ? 207 : 201 });
+  return NextResponse.json(
+    { message: 'Bulk upload completed', savedLeads, errors },
+    { status: 200 }
+  );
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   await dbConnect();
   try {
-    const leads = await Lead.find();
-    return new Response(JSON.stringify(leads), { status: 200 });
-  } catch (error) {
-    console.error("🔥 Error fetching leads:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch leads" }), { status: 500 });
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id');
+
+    if (id) {
+      const lead = await Lead.findById(id);
+      if (!lead) {
+        return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+      }
+      return NextResponse.json(lead, { status: 200 });
+    }
+
+    const allLeads = await Lead.find();
+    return NextResponse.json(allLeads, { status: 200 });
+  } catch (err) {
+    console.error('🔥 Error fetching leads:', err);
+    return NextResponse.json(
+      { error: 'Failed to fetch leads' },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(request: Request) {
   await dbConnect();
   const body = await request.json();
-  const { id, ...updateData } = body;
+  const { id, ...updateData } = body as { id?: string };
 
   if (!id) {
-    return new Response(JSON.stringify({ error: "Missing lead ID" }), { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing lead ID' },
+      { status: 400 }
+    );
   }
 
   try {
-    const updatedLead = await Lead.findByIdAndUpdate(id, updateData, { new: true });
-    if (!updatedLead) {
-      return new Response(JSON.stringify({ error: "Lead not found" }), { status: 404 });
+    const updated = await Lead.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+    if (!updated) {
+      return NextResponse.json(
+        { error: 'Lead not found' },
+        { status: 404 }
+      );
     }
-    return new Response(JSON.stringify({ message: "Lead updated successfully", lead: updatedLead }), { status: 200 });
-  } catch (error) {
-    console.error("🔥 Error updating lead:", error);
-    return new Response(JSON.stringify({ error: "Failed to update lead" }), { status: 500 });
+    return NextResponse.json(
+      { message: 'Lead updated successfully', lead: updated },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error('🔥 Error updating lead:', err);
+    return NextResponse.json(
+      { error: 'Failed to update lead' },
+      { status: 500 }
+    );
   }
 }
 
 export async function DELETE(request: Request) {
   await dbConnect();
-  const body = await request.json();
-  const { id } = body;
+  const { id } = (await request.json()) as { id?: string };
 
   if (!id) {
-    return new Response(JSON.stringify({ error: "Missing lead ID" }), { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing lead ID' },
+      { status: 400 }
+    );
   }
 
   try {
-    const deletedLead = await Lead.findByIdAndDelete(id);
-    if (!deletedLead) {
-      return new Response(JSON.stringify({ error: "Lead not found" }), { status: 404 });
+    const deleted = await Lead.findByIdAndDelete(id);
+    if (!deleted) {
+      return NextResponse.json(
+        { error: 'Lead not found' },
+        { status: 404 }
+      );
     }
-    return new Response(JSON.stringify({ message: "Lead deleted successfully" }), { status: 200 });
-  } catch (error) {
-    console.error("🔥 Error deleting lead:", error);
-    return new Response(JSON.stringify({ error: "Failed to delete lead" }), { status: 500 });
+    return NextResponse.json(
+      { message: 'Lead deleted successfully' },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error('🔥 Error deleting lead:', err);
+    return NextResponse.json(
+      { error: 'Failed to delete lead' },
+      { status: 500 }
+    );
   }
 }
-

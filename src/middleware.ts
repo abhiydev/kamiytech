@@ -1,12 +1,19 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export default clerkMiddleware()
+const isAdminRoute = createRouteMatcher(['/admin(.*)']);
 
-export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-}
+export default clerkMiddleware(async (auth, req) => {
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
+
+  if (!userId && isAdminRoute(req)) {
+    return redirectToSignIn({ returnBackUrl: req.url });
+  }
+
+  if (isAdminRoute(req)) {
+    const role = sessionClaims?.role;
+    if (role !== 'admin') {
+      // Optionally, you can redirect to a 403 page or homepage
+      return Response.redirect(new URL('/', req.url));
+    }
+  }
+});
