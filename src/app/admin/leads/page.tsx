@@ -118,6 +118,11 @@ export default function LeadsPage() {
     fetchLeads();
   }, [user, fetchLeads]);
 
+  const contactExists = useMemo(
+    () => formData.contact.trim() !== '' && leads.some(l => l.contact.trim() === formData.contact.trim()),
+    [leads, formData.contact]
+  );
+
   // Handle change for add/update forms
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -573,6 +578,17 @@ export default function LeadsPage() {
                     placeholder="Enter contact info"
                     className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
+                  {
+                    formData.contact && !/^\+?[0-9\s]+$/.test(formData.contact) && (
+                      <p className="text-red-500 text-xs mt-1">Invalid contact format</p>
+                    )
+                  }
+                  {contactExists && (
+                    <p className="text-red-600 text-sm mb-2">
+                      Contact already exists
+                    </p>
+                  )}
+
                 </div>
               </div>
 
@@ -728,6 +744,9 @@ export default function LeadsPage() {
                 placeholder="Contact"
                 className="p-3 bg-gray-800 border border-gray-700 rounded w-full"
               />
+              {
+
+              }
               <input
                 type="text"
                 name="address"
