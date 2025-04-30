@@ -1,0 +1,51 @@
+.pl {
+    display: block;
+    width: 5rem;
+    height: 5rem;
+  }
+  
+  .pl__ring {
+    animation: ringA 2s linear infinite;
+    transform-origin: 50% 50%;
+  }
+  
+  .pl__ring--a {
+    animation-name: ringA;
+  }
+  
+  .pl__ring--b {
+    animation-name: ringB;
+  }
+  
+  .pl__ring--c {
+    animation-name: ringC;
+  }
+  
+  .pl__ring--d {
+    animation-name: ringD;
+  }
+  
+  @keyframes ringA {
+    0% { stroke-dasharray: 0 660; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 330 330; stroke-dashoffset: -165; }
+    100% { stroke-dasharray: 0 660; stroke-dashoffset: -330; }
+  }
+  
+  @keyframes ringB {
+    0% { stroke-dasharray: 0 220; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 110 110; stroke-dashoffset: -55; }
+    100% { stroke-dasharray: 0 220; stroke-dashoffset: -110; }
+  }
+  
+  @keyframes ringC {
+    0% { stroke-dasharray: 0 440; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 220 220; stroke-dashoffset: -110; }
+    100% { stroke-dasharray: 0 440; stroke-dashoffset: -220; }
+  }
+  
+  @keyframes ringD {
+    0% { stroke-dasharray: 0 440; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 220 220; stroke-dashoffset: -110; }
+    100% { stroke-dasharray: 0 440; stroke-dashoffset: -220; }
+  }
+  

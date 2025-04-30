@@ -9,8 +9,8 @@ const AdminPanel = () => {
             desc: "view, add, and delete leads"
         },
         {
-            name: "Garbage collector", // Corrected spelling from "Garbadge" to "Garbage"
-            desc: "view, add, and delete garbage collection tasks" // Updated description for clarity
+            name: "inquiry", // Corrected spelling from "Garbadge" to "Garbage"
+            desc: "view, organic inquiries" // Updated description for clarity
         }
     ]
 

@@ -1,346 +1,129 @@
-'use client'
+"use client"
 
+import Image from 'next/image'
 import Link from 'next/link'
-import { useUser, UserButton } from '@clerk/nextjs'
-import { useState, useEffect, useRef, JSX } from 'react'
-import { usePathname } from 'next/navigation'
-import { IoIosArrowDropdownCircle } from 'react-icons/io'
-import { GrUserAdmin } from 'react-icons/gr'
-import { BiPurchaseTag } from 'react-icons/bi'
+import React, { useEffect, useState, useRef } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { FaBars, FaTimes } from 'react-icons/fa'
+import { ShinyButton } from '@/components/magicui/shiny-button'
 
-interface NavLink {
-  label: string
-  href: string
-}
+export default function Navbar() {
+    const pathname = usePathname()
+    const router = useRouter()
+    const [scrolled, setScrolled] = useState(false)
+    const [isHamOpen, setIsHamOpen] = useState(false)
+    const mobileNavRef = useRef<HTMLDivElement>(null)
 
-const navLinks: NavLink[] = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Services', href: '/services' },
-  { label: 'Contact', href: '/contact' }
-]
+    // add shadow on scroll
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 0)
+        onScroll()
+        window.addEventListener('scroll', onScroll)
+        return () => window.removeEventListener('scroll', onScroll)
+    }, [])
 
-export default function Navbar(): JSX.Element {
-  const { user, isSignedIn } = useUser()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false)
-  const [isUserDropDownOpen, setIsUserDropDownOpen] = useState<boolean>(false)
-  const pathname = usePathname()
-  const mobileMenuRef = useRef<HTMLDivElement>(null)
+    // close mobile nav on click outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (mobileNavRef.current && !mobileNavRef.current.contains(e.target as Node)) {
+                setIsHamOpen(false)
+            }
+        }
+        if (isHamOpen) document.addEventListener('mousedown', handleClickOutside)
+        return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [isHamOpen])
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev)
-  const toggleUserDropDown = () => setIsUserDropDownOpen((prev) => !prev)
+    const navLinks = [
+        { name: 'Home', path: '/' },
+        { name: 'About kamiytech', path: '/about' },
+        { name: 'Services', path: '/#ourservices' },
+        { name: 'Projects', path: '/projects' },
+        { name: 'Contact', path: '/#contactus' },
+        { name: 'Blog', path: '/blog' },
+    ]
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false)
-    setIsUserDropDownOpen(false)
-  }, [pathname])
+    return (
+        <nav 
+        className={`flex justify-between sticky top-0 z-50 bg-[--bg-color] items-center px-4 py-2 w-full mx-auto h-24 transition-all duration-300 ${
+            scrolled
+              ? 'bg-white/70 backdrop-blur-md shadow-lg'
+              : 'bg-transparent'
+          }`}        >
+            <div className='max-w-7xl mx-auto flex justify-between items-center w-full'>
 
+                {/* Logo */}
+                <Link href="/">
+                    <Image src="/logo.png" className="cursor-pointer object-cover" alt="logo" width={100} height={25} />
+                </Link>
 
-  // Close mobile menu when clicking outside its panel
-  useEffect(() => {
-    function handleClickOutside(event: globalThis.MouseEvent) {
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
-      ) {
-        setIsMobileMenuOpen(false)
-        setIsUserDropDownOpen(false)
-      }
-    }
-    if (isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isMobileMenuOpen])
-
-  const isActive = (path: string): boolean => pathname === path
-
-  return (
-    <nav
-      role="navigation"
-      aria-label="Main Navigation"
-      className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-md text-gray-900 font-sans"
-    >
-      {/* Container with max-width */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-bold text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            KamiyTech
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`relative transition-colors duration-300 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  isActive(href)
-                    ? 'text-blue-600 font-medium'
-                    : 'text-gray-600 hover:text-blue-600'
-                }`}
-              >
-                {label}
-                {isActive(href) && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600" />
-                )}
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop Auth & User Dropdown */}
-          <div className="hidden md:flex items-center space-x-4 relative">
-            {isSignedIn ? (
-              <div>
-                <button
-                  onClick={toggleUserDropDown}
-                  className="flex items-center gap-2 px-4 py-2 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  aria-haspopup="true"
-                  aria-expanded={isUserDropDownOpen}
-                >
-                  <UserButton
-                    appearance={{
-                      elements: {
-                        avatarBox:
-                          'w-10 h-10 transition-transform duration-300 hover:scale-105',
-                        userButtonPopoverCard:
-                          'bg-white shadow-lg border border-gray-200',
-                        userButtonPopoverActionButton:
-                          'text-gray-600 hover:text-blue-600'
-                      }
-                    }}
-                  />
-                  <div className="flex items-center gap-1">
-                    {user?.fullName}
-                    <IoIosArrowDropdownCircle className="text-blue-600" />
-                  </div>
-                </button>
-                {isUserDropDownOpen && (
-                  <ul className="absolute right-0 mt-2 w-48 bg-white text-gray-800 p-2 rounded shadow-lg z-10">
-                    <Link
-                      href="/purchases"
-                      className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 rounded transition"
+                {/* Desktop Links */}
+                <div className="hidden md:flex gap-8 font-semibold text-black items-center">
+                    {navLinks.map(link => (
+                        <Link
+                            key={link.path}
+                            href={link.path}
+                            className={`transition-colors hover:text-blue-600 ${pathname === link.path ? 'text-blue-600' : 'text-black'}`}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    <ShinyButton
+                        onClick={() => router.push('/#contactus')}
+                        className="bg-blue-600 cursor-pointer text-white rounded-full text-xs px-4 py-2 hover:bg-blue-800 hover:scale-75 transition"
                     >
-                      <BiPurchaseTag />
-                      Purchases
-                    </Link>
-                    {user?.publicMetadata?.role === 'admin' && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 rounded transition"
-                      >
-                        <GrUserAdmin />
-                        Admin Dashboard
-                      </Link>
-                    )}
-                  </ul>
-                )}
-              </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <Link
-                  href="/sign-in"
-                  className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
+                        Book a demo
+                    </ShinyButton>
+                </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="text-gray-600 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-transform"
-              aria-label="Toggle menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`md:hidden fixed inset-0 z-40 transition-opacity duration-300 ${
-          isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
-        aria-hidden={!isMobileMenuOpen}
-      >
-        {/* Backdrop */}
-        <div
-          className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-          onClick={toggleMobileMenu}
-        />
-
-        {/* Slide-in Mobile Menu Panel */}
-        <div
-          ref={mobileMenuRef}
-          className={`fixed top-0 right w-screen-0 h-full bg-white shadow-xl transform transition-transform duration-300 ${
-            isMobileMenuOpen ? '' : ''
-          }`}
-        >
-          <div className="flex justify-between items-center px-4 h-16 border-b w-full border-gray-200 bg-white">
-            <span className="text-xl font-semibold text-blue-600">Menu</span>
-            <button
-              onClick={toggleMobileMenu}
-              className="text-gray-600 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              aria-label="Close menu"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex flex-col px-4 py-6 space-y-3 bg-black">
-            {navLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={toggleMobileMenu}
-                className={`block px-4 py-3 rounded-xl transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  isActive(href)
-                    ? 'text-blue-600 bg-blue-50 font-medium shadow'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Mobile Authentication Section */}
-          <div className="px-4 py-4 border-t border-gray-200">
-            {!isSignedIn ? (
-              <div className="flex flex-col gap-3">
-                <Link
-                  href="/sign-in"
-                  onClick={toggleMobileMenu}
-                  className="text-blue-600 border border-blue-600 px-4 py-3 rounded-xl text-center hover:bg-blue-50 transition focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/sign-up"
-                  onClick={toggleMobileMenu}
-                  className="bg-blue-600 text-white px-4 py-3 rounded-xl text-center hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            ) : (
-              <div className="px-2 bg-white rounded-xl shadow-md">
+                {/* Mobile Toggle */}
                 <button
-                  onClick={toggleUserDropDown}
-                  className="flex items-center justify-between w-full focus:outline-none"
-                  aria-haspopup="true"
-                  aria-expanded={isUserDropDownOpen}
+                    className="md:hidden p-2 text-2xl text-black"
+                    onClick={() => setIsHamOpen(open => !open)}
+                    aria-label="Toggle menu"
                 >
-                  <div className="flex items-center gap-3">
-                    <UserButton
-                      appearance={{
-                        elements: {
-                          avatarBox:
-                            'w-10 h-10 transition-transform duration-300 hover:scale-105',
-                          userButtonPopoverCard:
-                            'bg-white shadow-lg border border-gray-200',
-                          userButtonPopoverActionButton:
-                            'text-gray-600 hover:text-blue-600'
-                        }
-                      }}
-                    />
-                    <span className="text-gray-800">{user?.fullName}</span>
-                  </div>
-                  <IoIosArrowDropdownCircle className="text-blue-600" />
+                    {isHamOpen ? <FaTimes /> : <FaBars />}
                 </button>
-                {isUserDropDownOpen && (
-                  <ul className="mt-2 bg-gray-50 rounded shadow p-2">
-                    <Link
-                      href="/purchases"
-                      onClick={toggleMobileMenu}
-                      className="block px-2 py-1 hover:bg-gray-100 rounded transition"
+
+                {/* Fullscreen Mobile Menu */}
+                {isHamOpen && (
+                    <div
+                        ref={mobileNavRef}
+                        className="md:hidden fixed inset-0 bg-white z-50 flex flex-col"
                     >
-                      <div className="flex items-center gap-2">
-                        <BiPurchaseTag />
-                        <span>Purchases</span>
-                      </div>
-                    </Link>
-                    {user?.publicMetadata?.role === 'admin' && (
-                      <Link
-                        href="/admin"
-                        onClick={toggleMobileMenu}
-                        className="block px-2 py-1 hover:bg-gray-100 rounded transition"
-                      >
-                        <div className="flex items-center gap-2">
-                          <GrUserAdmin />
-                          <span>Admin Dashboard</span>
+                        {/* Header with close */}
+                        <div className="flex items-center justify-between p-4 border-b">
+                            <Link href="/">
+                                <Image src="/logo.png" className="cursor-pointer object-cover" alt="logo" width={100} height={25} />
+                            </Link>
+                            <button className="p-2 text-2xl" onClick={() => setIsHamOpen(false)}>
+                                <FaTimes />
+                            </button>
                         </div>
-                      </Link>
-                    )}
-                  </ul>
+                        {/* Nav Links */}
+                        <div className="flex-grow overflow-y-auto p-4 space-y-4 font-semibold">
+                            {navLinks.map(link => (
+                                <Link
+                                    key={link.path}
+                                    href={link.path}
+                                    onClick={() => setIsHamOpen(false)}
+                                    className={`block px-4 py-2 rounded transition-colors ${pathname === link.path ? 'text-blue-600 bg-blue-100' : 'text-black hover:bg-gray-100'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                        {/* Footer Button */}
+                        <div className="p-4 border-t">
+                            <button
+                                onClick={() => { setIsHamOpen(false); router.push('/#contactus') }}
+                                className="w-full cursor-pointer bg-blue-600 text-white rounded-full text-xs px-4 py-2 hover:bg-blue-800 transition"
+                            >
+                                Book a demo
+                            </button>
+                        </div>
+                    </div>
                 )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
+            </div>
+        </nav>
+    )
 }

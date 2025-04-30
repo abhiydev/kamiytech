@@ -1,27 +1,27 @@
-import { auth } from "@clerk/nextjs/server";
+// import Image from "next/image";
+import Hero from "@/components/Hero";
+import Navbar from "@/components/Navbar";
+import OurServices from "@/components/OurServicesd";
+import GoogleForm from "@/components/GoogleForm";
+import Image from "next/image";
+import Footer from "@/components/Footer";
 
-interface SessionClaims {
-  metadata?: {
-    role?: string;
-  };
-}
 
-export default async function Home() {
-  const { userId, sessionClaims } = await auth();
-  console.log(userId);
-  console.log((sessionClaims as SessionClaims)?.metadata?.role);
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl font-bold text-center mb-8">Welcome to KamiyTech</h1>
-        {
-          userId ? (
-            <p className="text-center">You are logged in as {String(sessionClaims?.role)}</p>
-          ) : (
-            <p className="text-center">You are not logged in</p>
-          )
-        }
+    <div className="flex flex-col items-center">
+      <Navbar/>
+      <Hero/>
+      <div>
+      <Image src={'/wave.svg'} width={5000} height={120} alt="wave"/>
       </div>
-    </main>
-  )
+      <main >
+        <OurServices />
+        <GoogleForm />
+      </main>
+      <footer>
+      <Footer />
+      </footer>
+    </div>
+  );
 }

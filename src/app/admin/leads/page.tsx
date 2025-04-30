@@ -523,7 +523,7 @@ export default function LeadsPage() {
                     value={formData.companyname}
                     onChange={handleChange}
                     placeholder="Enter company name"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -535,7 +535,7 @@ export default function LeadsPage() {
                     name="cat"
                     value={formData.cat}
                     onChange={handleChange}
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   >
                     <option value="" disabled>
                       Select category
@@ -562,7 +562,7 @@ export default function LeadsPage() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Enter name"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -576,7 +576,7 @@ export default function LeadsPage() {
                     value={formData.contact}
                     onChange={handleChange}
                     placeholder="Enter contact info"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                   {
                     formData.contact && !/^\+?[0-9\s]+$/.test(formData.contact) && (
@@ -605,7 +605,7 @@ export default function LeadsPage() {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Street address"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -619,7 +619,7 @@ export default function LeadsPage() {
                     value={formData.area}
                     onChange={handleChange}
                     placeholder="Area/Locality"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -633,7 +633,7 @@ export default function LeadsPage() {
                     value={formData.city}
                     onChange={handleChange}
                     placeholder="City"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
                 <div className="flex flex-col">
@@ -647,7 +647,7 @@ export default function LeadsPage() {
                     value={formData.country}
                     onChange={handleChange}
                     placeholder="Country"
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   />
                 </div>
               </div>
@@ -663,7 +663,7 @@ export default function LeadsPage() {
                     name="quality"
                     value={formData.quality}
                     onChange={handleChange}
-                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                    className="h-12 px-4 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                   >
                     <option value="" disabled>
                       Select quality
@@ -687,7 +687,7 @@ export default function LeadsPage() {
                     value={formData.desc}
                     onChange={handleChange}
                     placeholder="Additional details"
-                    className="px-4 py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
+                    className="px-4 py-3 bg-gray-100 dark:bg-gray-800 border text-black border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition resize-none"
                   />
                 </div>
               </div>
