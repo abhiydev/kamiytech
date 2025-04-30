@@ -9,8 +9,12 @@ export const metadata: Metadata = {
   description: "KamiyTech delivers custom websites, e-commerce platforms, SEO optimization, and responsive design for businesses and startups.",
   keywords: [
     "custom software development",
+    "Kamiy tech",
     "website development",
     "e-commerce solutions",
+    "mobile app development",
+    "UI/UX design",
+    "digital marketing",
     "SEO optimization",
     "KamiyTech",
     "web design for startups",
@@ -21,12 +25,12 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://kamiytech.com"),
   openGraph: {
     title: "KamiyTech | Software Solutions for Your Business",
-    description: "Professional website development, SEO services, and scalable digital solutions for modern businesses.",
+    description: "Professional website development, SEO services, and scalable digital solutions for modern businesses in indore, madhya pradesh and india.",
     url: "https://kamiytech.com",
     siteName: "KamiyTech",
     images: [
       {
-        url: "https://kamiytech.com/banner.jpg", // Replace with actual image URL
+        url: "https://kamiytech.com/_next/image?url=%2Flogo.png&w=256&q=75", // Replace with actual image URL
         width: 1200,
         height: 630,
         alt: "KamiyTech Banner",
@@ -38,9 +42,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KamiyTech",
-    description: "Custom web and software development for growing businesses.",
+    description: "Custom web and software development for growing businesses in indore, madhya pradesh and india.",
     creator: "@kamiytech", // If you have a Twitter handle
-    images: ["https://kamiytech.com/banner.jpg"],
+    images: ["https://kamiytech.com/_next/image?url=%2Flogo.png&w=256&q=75"],
   },
   themeColor: "#0d9488",
 }
