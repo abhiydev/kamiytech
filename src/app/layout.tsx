@@ -76,6 +76,11 @@ export default function RootLayout({
           <Head>
             <link rel="canonical" href="https://kamiytech.com" />
             <meta name="robots" content="index, follow" />
+            <link rel="icon" type="image/png" href="/https://kamiytech.com/favicon.ico/favicon-96x96.png" sizes="96x96" />
+            <link rel="icon" type="image/svg+xml" href="/https://kamiytech.com/favicon.ico/favicon.svg" />
+            <link rel="shortcut icon" href="/https://kamiytech.com/favicon.ico/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/https://kamiytech.com/favicon.ico/apple-touch-icon.png" />
+            <link rel="manifest" href="/https://kamiytech.com/favicon.ico/site.webmanifest" />
           </Head>
           {children}
         </ClerkProvider>
