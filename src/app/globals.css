@@ -3,6 +3,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.clip-polygon {
+  clip-path: polygon(50% 0%, 100% 25%, 75% 100%, 0% 75%);
+}
+.clip-polygon-flip {
+  clip-path: polygon(0% 0%, 100% 25%, 75% 100%, 0% 75%);
+}
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

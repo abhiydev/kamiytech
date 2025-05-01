@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import Head from "next/head";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Listbox, Transition } from "@headlessui/react";
@@ -40,6 +40,21 @@ const requirementOptions: RequirementOption[] = [
   "Other",
 ];
 
+// 1) Define a TypeScript interface for our ContactPage JSON-LD
+interface ContactPageSchema {
+  "@context": "https://schema.org";
+  "@type": "ContactPage";
+  name: string;
+  url: string;
+  description: string;
+  contactPoint: {
+    "@type": "ContactPoint";
+    contactType: string;
+    telephone: string;
+    availableLanguage: string;
+  };
+}
+
 export default function BookDemoForm() {
   const {
     register,
@@ -47,7 +62,9 @@ export default function BookDemoForm() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ defaultValues: { requirement: requirementOptions[0] } });
+  } = useForm<FormData>({
+    defaultValues: { requirement: requirementOptions[0] },
+  });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -75,6 +92,31 @@ export default function BookDemoForm() {
       )}`
     : "about:blank";
 
+  // 2) Inject typed JSON-LD
+  useEffect(() => {
+    const ld: ContactPageSchema = {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      name: "KamiyTech Demo Booking",
+      url: "https://kamiytech.com/#contactus",
+      description: "Book a free demo of KamiyTech’s custom software and web services",
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        telephone: "+91-9977858817",
+        availableLanguage: "en",
+      },
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(ld);
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   return (
     <>
       <Head>
@@ -89,33 +131,12 @@ export default function BookDemoForm() {
       <section
         id="contactus"
         className="relative bg-gradient-to-r from-blue-50 via-indigo-100 to-blue-200 pt-16 pb-24 overflow-hidden"
+        aria-labelledby="contactus-title"
       >
-        {/* ContactPage JSON-LD */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "ContactPage",
-              name: "KamiyTech Demo Booking",
-              url: "https://kamiytech.com/#contactus",
-              description: "Book a free demo of KamiyTech’s custom software and web services",
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "customer support",
-                telephone: "+91-9977858817",
-                availableLanguage: "en",
-              },
-            }),
-          }}
-        />
-
-        {/* toast messages are announced */}
+        {/* Toast container */}
         <Toaster
           position="top-right"
-          toastOptions={{
-            ariaProps: { role: "status", "aria-live": "polite" },
-          }}
+          toastOptions={{ ariaProps: { role: "status", "aria-live": "polite" } }}
         />
 
         {/* Animated backgrounds */}
@@ -130,7 +151,10 @@ export default function BookDemoForm() {
           transition={{ duration: 14, repeat: Infinity }}
         />
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center">
+        <h2
+          id="contactus-title"
+          className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center"
+        >
           Contact Us for a Free <span className="text-blue-600">Demo</span>
         </h2>
         <p className="text-xs text-gray-700 text-center mb-12">
@@ -180,7 +204,7 @@ export default function BookDemoForm() {
                 )}
               </div>
 
-              {/* Mobile → Contact */}
+              {/* Mobile */}
               <div className="relative">
                 <label htmlFor="mobile" className="sr-only">
                   Mobile number
@@ -237,7 +261,7 @@ export default function BookDemoForm() {
                 )}
               </div>
 
-              {/* Requirement Listbox */}
+              {/* Requirement */}
               <Controller
                 control={control}
                 name="requirement"
@@ -251,23 +275,10 @@ export default function BookDemoForm() {
                         <span className="block truncate">{field.value}</span>
                         <ChevronUpDownIcon className="absolute right-3 top-1/2 w-5 h-5 text-gray-400 -translate-y-1/2" />
                       </Listbox.Button>
-                      <Transition
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max- h-60 overflow-auto focus:outline-none">
+                      <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto focus:outline-none">
                           {requirementOptions.map((option) => (
-                            <Listbox.Option
-                              key={option}
-                              value={option}
-                              className={({ active }) =>
-                                `cursor-pointer select-none px-4 py-2 ${
-                                  active ? "bg-blue-100" : ""
-                                }`
-                              }
-                            >
+                            <Listbox.Option key={option} value={option} className={({ active }) => `cursor-pointer select-none px-4 py-2 ${active ? "bg-blue-100" : ""}`}>
                               {({ selected }) => (
                                 <div className="flex items-center justify-between">
                                   <span>{option}</span>
@@ -312,20 +323,9 @@ export default function BookDemoForm() {
           </motion.div>
 
           {/* Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
             <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
-              <iframe
-                src={mapUrl}
-                title="KamiyTech Location Map"
-                className="w-full aspect-video"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+              <iframe src={mapUrl} title="KamiyTech Location Map" className="w-full aspect-video" allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
               <div className="p-6 text-center">
                 <address className="not-italic mb-4">
                   <MapPinIcon className="inline w-5 h-5 mr-2 text-blue-600" />

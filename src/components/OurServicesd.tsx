@@ -61,7 +61,7 @@ export default function OurServices() {
       </Head>
 
       <section
-        className="relative pt-20 pb-32 overflow-hidden bg-white"
+        className="relative pt-20 pb-32 overflow-hidden bg-white max-w-7xl mx-auto"
         id="ourservices"
       >
         {/* Top wave */}
@@ -81,7 +81,7 @@ export default function OurServices() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section header */}
           <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-5xl font-extrabold text-gray-900">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900">
               Our Services — Web, Mobile & Digital Marketing Solutions
             </h2>
             <p className="mt-4 text-sm text-gray-600">
