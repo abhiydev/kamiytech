@@ -3,6 +3,7 @@ import { Audiowide, Inter, Fira_Code } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import Head from "next/head"
+import { Analytics } from "@vercel/analytics/react"
 
 export const metadata: Metadata = {
   title: "KamiyTech | Custom Software & Web Solutions",
@@ -83,6 +84,7 @@ export default function RootLayout({
             <link rel="manifest" href="/https://kamiytech.com/favicon.ico/site.webmanifest" />
           </Head>
           {children}
+          <Analytics />
         </ClerkProvider>
       </body>
     </html>
