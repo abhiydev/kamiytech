@@ -71,7 +71,7 @@ export default function LeadsPage() {
   const [showFilterSort, setShowFilterSort] = useState<boolean>(false);
 
   // Options (feel free to extend)
-  const qualityOptions = ['High', 'Mid', 'Low', 'Unknown'];
+  const qualityOptions = ['High', 'Mid', 'Low','Not Intrested', 'Unknown'];
   const categoryOptions = [
     'Gym',
     'Real Estate',
@@ -270,7 +270,9 @@ export default function LeadsPage() {
       case 'Mid':
         return 'bg-yellow-600 text-white';
       case 'Low':
-        return 'bg-red-600 text-white';
+        return 'bg-orange-600 text-white';
+      case 'Not Intrested':
+          return 'bg-red-600 text-white';
       default:
         return 'bg-gray-600 text-white';
     }

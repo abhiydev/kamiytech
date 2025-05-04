@@ -11,6 +11,22 @@ const AdminPanel = () => {
         {
             name: "inquiry", // Corrected spelling from "Garbadge" to "Garbage"
             desc: "view, organic inquiries" // Updated description for clarity
+        },
+        {
+            name: "projects",
+            desc: "view, add, and delete projects"
+        },
+        {
+            name: "services",
+            desc: "view, add, and delete services"
+        },
+        {
+            name: "users",
+            desc: "view, add, and delete users"
+        },
+        {
+            name: "settings",
+            desc: "update site settings"
         }
     ]
 
