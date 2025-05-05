@@ -14,30 +14,6 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Services Overview -->
-  <!-- <url>
-    <loc>https://kamiytech.com/services</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url> -->
-
-  <!-- Individual Service Pages (example) -->
-  <!-- <url>
-    <loc>https://kamiytech.com/services/web-development</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url> -->
-  <!-- <url>
-    <loc>https://kamiytech.com/services/mobile-apps</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kamiytech.com/services/ux-ui-design</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url> -->
-
   <!-- Blog Listing -->
   <url>
     <loc>https://kamiytech.com/blog</loc>
@@ -45,8 +21,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Blog Post Template
-  <!-- Replace {slug} dynamically -->
+  <!-- Blog Post Template: Replace {slug} dynamically -->
   <url>
     <loc>https://kamiytech.com/blog/{slug}</loc>
     <changefreq>weekly</changefreq>
@@ -58,17 +33,19 @@
     <loc>https://kamiytech.com/contact</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
-  </url> -->
-
-  <!-- Legal Pages
-  <url>
-    <loc>https://kamiytech.com/privacy-policy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
   </url>
-  <url>
-    <loc>https://kamiytech.com/terms-of-service</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url> -->
+
+  <!--
+    Legal Pages
+    <url>
+      <loc>https://kamiytech.com/privacy-policy</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.3</priority>
+    </url>
+    <url>
+      <loc>https://kamiytech.com/terms-of-service</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.3</priority>
+    </url>
+  -->
 </urlset>
