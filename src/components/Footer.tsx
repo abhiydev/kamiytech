@@ -49,7 +49,7 @@ export default function Footer(): JSX.Element {
 
       <div className="mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Logo & Social */}
-        <div className="space-y-4 mb-9">
+        <div className="space-y-4 mb-10">
           <Link href="/" title="Go to KamiyTech homepage">
             <Image
               src="/logo.png"

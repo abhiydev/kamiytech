@@ -1,0 +1,14 @@
+# Allow all crawlers full access
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://kamiytech.com/sitemap.xml
+
+# Crawl-delay directive (optional)
+# Crawl-delay: 10
+
+# Disallow any private or staging directories (example)
+# Disallow: /private/
+# Disallow: /staging/
+# Disallow: /admin/
