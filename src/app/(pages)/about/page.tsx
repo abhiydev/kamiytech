@@ -5,6 +5,7 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BookDemoForm from "@/components/GoogleForm";
 
 export default function About() {
   // read Google Maps API key
@@ -64,6 +65,7 @@ export default function About() {
           </div>
 
           <main className="flex-grow container mx-auto px-6 py-12 space-y-16">
+          </main>
             {/* Title */}
             <motion.h1
               className="text-5xl md:text-6xl font-bold text-gray-900 text-center"
@@ -210,34 +212,8 @@ export default function About() {
               </ul>
             </section>
 
-            {/* Office Location Map & Address */}
-            <section className="bg-white bg-opacity-80 rounded-xl shadow-lg p-6">
-              <h2 className="text-3xl font-semibold mb-4 text-center">
-                🏢 Our Office Location
-              </h2>
-              <div className="flex flex-col lg:flex-row lg:space-x-6">
-                <div className="flex-1 aspect-video overflow-hidden rounded-lg shadow-lg">
-                  <iframe
-                    src={mapUrl}
-                    title="KamiyTech Office Location"
-                    className="w-full h-full"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-                <div className="mt-4 lg:mt-0 flex-1 text-gray-800">
-                  <h3 className="text-xl font-bold mb-2">Our Address</h3>
-                  <address className="not-italic space-y-1">
-                    <p>KamiyTech</p>
-                    <p>Plot No. 123, 3rd Floor, Tech Park Building</p>
-                    <p>Vijay Nagar, Indore – 452001</p>
-                    <p>Madhya Pradesh, India</p>
-                  </address>
-                </div>
-              </div>
-            </section>
-          </main>
+          <BookDemoForm />
+            {/* Google Maps Embed */}
 
           {/* Bottom wave */}
           <div className="relative -mt-1">
