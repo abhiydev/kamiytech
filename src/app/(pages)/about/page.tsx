@@ -9,7 +9,7 @@ import BookDemoForm from "@/components/GoogleForm";
 
 export default function About() {
   // read Google Maps API key
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  // const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   // const mapUrl = apiKey
   //   ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(
   //       "Kamiytech 1/32, behind SICA School Road, Vijay Nagar, Scheme No 54, Indore, Madhya Pradesh 452010"
