@@ -10,11 +10,11 @@ import BookDemoForm from "@/components/GoogleForm";
 export default function About() {
   // read Google Maps API key
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const mapUrl = apiKey
-    ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(
-        "Kamiytech 1/32, behind SICA School Road, Vijay Nagar, Scheme No 54, Indore, Madhya Pradesh 452010"
-      )}`
-    : "about:blank";
+  // const mapUrl = apiKey
+  //   ? `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(
+  //       "Kamiytech 1/32, behind SICA School Road, Vijay Nagar, Scheme No 54, Indore, Madhya Pradesh 452010"
+  //     )}`
+  //   : "about:blank";
 
   // inject AboutPage structured data
   useEffect(() => {
@@ -93,7 +93,6 @@ export default function About() {
                   paragraphs: [
                     "At Kamiytech, our mission is to blend empathy-driven UX/UI design with robust engineering to create digital experiences users love.",
                     "We partner with clients to transform ideas into scalable solutions—from MVPs to full-scale platforms—right here in Indore, Madhya Pradesh.",
-                    "We help businesses grow by providing tailored software solutions that meet their unique needs.",
                     "Our commitment to quality and innovation makes KamiyTech the go-to software development partner for businesses in India.",
                   ],
                 },
