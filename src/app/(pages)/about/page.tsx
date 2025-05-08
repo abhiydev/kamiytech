@@ -93,6 +93,7 @@ export default function About() {
                   paragraphs: [
                     "At Kamiytech, our mission is to blend empathy-driven UX/UI design with robust engineering to create digital experiences users love.",
                     "We partner with clients to transform ideas into scalable solutions—from MVPs to full-scale platforms—right here in Indore, Madhya Pradesh.",
+                    "We help businesses grow by providing tailored software solutions that meet their unique needs.",
                     "Our commitment to quality and innovation makes KamiyTech the go-to software development partner for businesses in India.",
                   ],
                 },

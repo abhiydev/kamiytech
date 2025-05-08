@@ -34,18 +34,4 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!--
-    Legal Pages
-    <url>
-      <loc>https://kamiytech.com/privacy-policy</loc>
-      <changefreq>yearly</changefreq>
-      <priority>0.3</priority>
-    </url>
-    <url>
-      <loc>https://kamiytech.com/terms-of-service</loc>
-      <changefreq>yearly</changefreq>
-      <priority>0.3</priority>
-    </url>
-  -->
 </urlset>
