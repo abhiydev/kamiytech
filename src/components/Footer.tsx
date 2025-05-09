@@ -122,11 +122,9 @@ export default function Footer(): JSX.Element {
           <h3 className="text-xl font-bold mb-4 text-blue-200">Services</h3>
           <ul className="space-y-2 text-gray-200">
             {[
-              { href: "/services/custom-software", label: "Custom Software Development" },
-              { href: "/services/mobile-apps", label: "Mobile App Development" },
-              { href: "/services/ui-ux", label: "UI/UX Design" },
+              { href: "/services/development-process", label: "Our Development Process" },
               { href: "/services/digital-marketing", label: "Digital Marketing" },
-              { href: "/services/support", label: "Maintenance & Support" },
+              { href: "/services/maintenance-support", label: "Maintenance & Support" },
             ].map((item) => (
               <li key={item.href}>
                 <Link
