@@ -53,7 +53,13 @@ export default function Navbar() {
 
                 {/* Logo */}
                 <Link href="/">
-                    <Image src="/logo.svg" className="cursor-pointer object-cover" alt="logo" width={100} height={25} />
+                    <Image 
+                        src="/logo.svg" 
+                        className="cursor-pointer object-cover scale-110 ml-2 md:ml-0" 
+                        alt="logo" 
+                        width={120} 
+                        height={56}
+                    />
                 </Link>
 
                 {/* Desktop Links */}
