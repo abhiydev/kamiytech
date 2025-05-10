@@ -19,7 +19,7 @@ export default function Home() {
         <OurServices />
         <GoogleForm />
       </main>
-      <footer>
+      <footer className="w-full bg-gradient-to-tr max-w-7xl from-blue-600 via-blue-700 to-indigo-800 text-gray-100">
       <Footer />
       </footer>
     </div>

@@ -29,7 +29,7 @@ export default function Footer(): JSX.Element {
             logo: "https://kamiytech.com/logo.png",
             sameAs: [
               "https://twitter.com/kamiytech",
-              "https://facebook.com/kamiytech",
+              "https://www.facebook.com/profile.php?id=61576014324871",
               "https://instagram.com/kamiytech",
               "https://github.com/kamiytech",
               "https://linkedin.com/company/kamiytech",
