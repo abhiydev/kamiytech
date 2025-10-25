@@ -1,10 +1,10 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import api from '@/lib/axios'
 
-const addBlog = () => {
+const AddBlog = () => {
     const [title, setTitle] = useState('')
     const [desc, setDesc] = useState('')
     const [image, setImage] = useState<File | null>(null)
@@ -105,4 +105,4 @@ const addBlog = () => {
         </div>
     )
 }
-export default addBlog
+export default AddBlog

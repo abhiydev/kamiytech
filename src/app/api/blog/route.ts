@@ -102,10 +102,10 @@ export async function POST(req: NextRequest) {
     const blog = await Blog.create({ title, desc, imageURL });
 
     return NextResponse.json({ success: true, blog });
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
     console.error("❌ Error in POST /api/blog:", error);
-    const message =
-      error?.message?.includes("allowed") || error?.message?.includes("file")
+    const message = error instanceof Error && 
+      (error.message.includes("allowed") || error.message.includes("file"))
         ? error.message
         : "Internal Server Error";
     return NextResponse.json({ success: false, error: message }, { status: 500 });
