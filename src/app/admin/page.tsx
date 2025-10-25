@@ -13,6 +13,10 @@ const AdminPanel = () => {
             desc: "view, organic inquiries" // Updated description for clarity
         },
         {
+            name: "blog",
+            desc: "view, add, and delete blog posts"
+        },
+        {
             name: "projects",
             desc: "view, add, and delete projects"
         },
