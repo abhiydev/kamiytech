@@ -19,7 +19,8 @@ export const metadata: Metadata = {
     "SEO optimization",
     "KamiyTech",
     "web design for startups",
-    "responsive web development"
+    "responsive web development",
+    "Indore software company",
   ],
   authors: [{ name: "KamiyTech", url: "https://kamiytech.com" }],
   creator: "KamiyTech",
