@@ -1,30 +1,30 @@
 import { Metadata } from "next";
 
-interface CityPageProps {
-  params: {
-    city: string;
-  };
-}
+// ✅ Type definition — compatible with Next.js 15
+type CityPageProps = {
+  params: Promise<{ city: string }>;
+};
 
-// ✅ Generate dynamic metadata for SEO
+// ✅ Dynamic Metadata
 export async function generateMetadata({ params }: CityPageProps): Promise<Metadata> {
-  const cityName = decodeURIComponent(params.city);
+  const { city } = await params;
+  const cityName = decodeURIComponent(city);
   const capitalizedCity = cityName.charAt(0).toUpperCase() + cityName.slice(1);
 
   return {
     title: `${capitalizedCity} Web Development | KamiyTech`,
-    description: `KamiyTech provides top-rated web development, app design, and digital solutions in ${capitalizedCity}. Partner with us for modern websites, SEO, and custom software solutions.`,
+    description: `KamiyTech provides professional web development, UI/UX, and SEO services in ${capitalizedCity}. Build modern, scalable websites with us.`,
     keywords: [
       `${capitalizedCity} web development`,
       `${capitalizedCity} website design`,
       `${capitalizedCity} software company`,
       `${capitalizedCity} app development`,
       `${capitalizedCity} SEO services`,
-      "KamiyTech web development India",
+      "KamiyTech India web development",
     ],
     openGraph: {
       title: `${capitalizedCity} Web Development | KamiyTech`,
-      description: `Build modern, responsive websites and digital platforms with KamiyTech — your trusted web development partner in ${capitalizedCity}.`,
+      description: `Build modern, responsive websites with KamiyTech — your trusted web development company in ${capitalizedCity}.`,
       url: `https://kamiytech.com/web-development/${cityName}`,
       siteName: "KamiyTech",
       type: "website",
@@ -37,7 +37,8 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
 
 // ✅ Page Component
 export default async function CityPage({ params }: CityPageProps) {
-  const cityName = decodeURIComponent(params.city);
+  const { city } = await params;
+  const cityName = decodeURIComponent(city);
   const capitalizedCity = cityName.charAt(0).toUpperCase() + cityName.slice(1);
 
   return (
@@ -46,32 +47,30 @@ export default async function CityPage({ params }: CityPageProps) {
         Web Development Services in {capitalizedCity}
       </h1>
       <p className="text-lg text-gray-600 mb-8">
-        KamiyTech specializes in full-stack web development, modern UI design, and
-        SEO-optimized digital solutions for businesses in {capitalizedCity}. Our
-        mission is to help startups, brands, and enterprises build high-performing
-        websites that convert visitors into customers.
+        KamiyTech specializes in web development, modern UI design, and SEO-optimized
+        digital solutions for startups and businesses in {capitalizedCity}.
       </p>
 
       <div className="grid md:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-2xl font-semibold mb-2">Our Services Include:</h2>
+          <h2 className="text-2xl font-semibold mb-2">Our Services</h2>
           <ul className="list-disc list-inside text-gray-700">
             <li>Custom Web App Development</li>
             <li>Responsive Website Design</li>
-            <li>eCommerce Solutions</li>
-            <li>SEO & Performance Optimization</li>
-            <li>Branding & UI/UX Design</li>
-            <li>API Integration & Automation</li>
+            <li>eCommerce Development</li>
+            <li>SEO Optimization</li>
+            <li>UI/UX & Branding</li>
+            <li>API Integration</li>
           </ul>
         </div>
 
         <div>
           <h2 className="text-2xl font-semibold mb-2">Why Choose KamiyTech?</h2>
           <ul className="list-disc list-inside text-gray-700">
-            <li>Expert team of developers and designers</li>
-            <li>Affordable pricing for startups and SMBs</li>
-            <li>100% transparent communication</li>
-            <li>Proven track record across India</li>
+            <li>Experienced Development Team</li>
+            <li>Affordable Pricing</li>
+            <li>Modern Tech Stack</li>
+            <li>Transparent Communication</li>
           </ul>
         </div>
       </div>
