@@ -95,17 +95,14 @@ const Blog = () => {
                 key={blog._id}
                 className="bg-white shadow-md rounded-xl overflow-hidden text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-200"
               >
-                {/* ✅ Blog Image */}
+                {/* ✅ Cloudinary Image */}
                 {blog.imageURL ? (
                   <div className="relative w-full h-48">
                     <Image
-                      src={
-                        blog.imageURL.startsWith('/')
-                          ? blog.imageURL
-                          : `/uploads/${blog.imageURL}`
-                      }
+                      src={blog.imageURL}
                       alt={blog.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover"
                     />
                   </div>

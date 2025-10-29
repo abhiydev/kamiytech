@@ -76,6 +76,14 @@ const BlogDetails = () => {
     )
   }
 
+  // ✅ Determine correct image source (supports both Cloudinary and local uploads)
+  const getImageSrc = (url?: string) => {
+    if (!url) return ''
+    if (url.startsWith('http')) return url // Cloudinary or external
+    if (url.startsWith('/')) return url // Local public upload
+    return `/uploads/${url}` // fallback for legacy uploads
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
       <Navbar />
@@ -86,11 +94,7 @@ const BlogDetails = () => {
         {blog.imageURL && (
           <div className="relative w-full max-w-3xl h-[400px] mb-6">
             <Image
-              src={
-                blog.imageURL.startsWith('/')
-                  ? blog.imageURL
-                  : `/uploads/${blog.imageURL}`
-              }
+              src={getImageSrc(blog.imageURL)}
               alt={blog.title}
               fill
               className="rounded-lg object-cover"
