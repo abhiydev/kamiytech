@@ -1,10 +1,7 @@
-
-// Ensure Google Maps types are available
 /// <reference types="@types/google.maps" />
-
 "use client";
 
-import React, { useEffect, useRef, Fragment, JSX } from "react";
+import React, { useEffect, useRef, Fragment } from "react";
 import Head from "next/head";
 import Script from "next/script";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -28,6 +25,8 @@ interface FormData {
   email?: string;
   requirement: RequirementOption;
   message?: string;
+  // honeypot to trap bots
+  website?: string;
 }
 
 type RequirementOption =
@@ -67,8 +66,8 @@ declare global {
   }
 }
 
-export default function BookDemoForm(): JSX.Element {
-  const mapRef = useRef<HTMLDivElement>(null);
+export default function BookDemoForm(): React.ReactElement {
+  const mapRef = useRef<HTMLDivElement | null>(null);
 
   const {
     register,
@@ -76,10 +75,38 @@ export default function BookDemoForm(): JSX.Element {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ defaultValues: { requirement: requirementOptions[0] } });
+  } = useForm<FormData>({ defaultValues: { requirement: requirementOptions[0], website: "" } });
+
+  // sendEmail now accepts subject & message (avoids race on state)
+  const sendEmail = async (subjectParam: string, messageParam: string) => {
+    try {
+      const res = await axios.post("/api/send-email", { subject: subjectParam, message: messageParam });
+      return res.data;
+    } catch (err) {
+      console.error("Email send error:", err);
+      throw err;
+    }
+  };
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    // Honeypot check (bots often fill hidden fields)
+    if (data.website && data.website.trim() !== "") {
+      // silently drop or log suspicious submission
+      console.warn("Honeypot triggered — possible bot", data);
+      return;
+    }
+
+    // Minimal client-side sanitization/format
+    const msg = [
+      `Name: ${data.name}`,
+      `Contact: ${data.mobile}`,
+      `Email: ${data.email ?? "-"}`,
+      `Requirements: ${data.requirement}`,
+      `Message: ${data.message ?? "-"}`,
+    ].join("\n");
+
     try {
+      // First save inquiry in your DB/backend
       await axios.post("/api/inquiry", {
         name: data.name,
         contact: data.mobile,
@@ -87,10 +114,14 @@ export default function BookDemoForm(): JSX.Element {
         requirements: data.requirement,
         message: data.message ?? "",
       });
-      toast.success("Your request has been submitted!");
+
+      // Then send email (await to ensure result before notifying user)
+      await sendEmail("Inquiry", msg);
+      toast.success("Your request has been submitted and we've emailed the details.");
       reset();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Submission error:", error);
+      // show friendly message, optionally use error.response?.data for details
       toast.error("Submission failed. Please try again later.");
     }
   };
@@ -117,17 +148,22 @@ export default function BookDemoForm(): JSX.Element {
   }, []);
 
   useEffect(() => {
+    // initialize map callback in global scope for Google callback
     window.initMapCallback = () => {
       if (!mapRef.current || !window.google?.maps) return;
       const center: google.maps.LatLngLiteral = { lat: 22.7557068, lng: 75.8948441 };
+
+      // If you use a Map ID, ensure it's valid in Google Cloud Console. If not, remove mapId.
       const map = new window.google.maps.Map(mapRef.current, {
         center,
         zoom: 14,
-        mapId: "DEMO_MAP_ID",
+        // mapId: "DEMO_MAP_ID", // uncomment only if you have a valid Map ID
       });
+
       new window.google.maps.Marker({ position: center, map, title: "Our Location" });
     };
-    // If script already loaded
+
+    // If script already loaded (rare), call init
     if (window.google && window.google.maps) {
       window.initMapCallback();
     }
@@ -144,8 +180,9 @@ export default function BookDemoForm(): JSX.Element {
         <link rel="canonical" href="https://kamiytech.com/#contactus" />
       </Head>
 
+      {/* Load Google Maps. Restrict your API key with HTTP referrers in Google Cloud. */}
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&callback=initMapCallback&libraries=maps,marker&v=beta`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&callback=initMapCallback&libraries=maps&v=beta`}
         strategy="afterInteractive"
         onError={(e) => console.error("Google Maps script load error:", e)}
       />
@@ -170,14 +207,18 @@ export default function BookDemoForm(): JSX.Element {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="bg-white shadow-lg rounded-2xl p-8">
             <h3 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">📅 Book a Demo</h3>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+              {/* Honeypot - hidden field for bots */}
+              <input className="sr-only" tabIndex={-1} autoComplete="off" {...register("website")} />
+
               {/* Name */}
               <div className="relative">
                 <label htmlFor="name" className="sr-only">Your full name</label>
                 <UserIcon className="absolute left-3 top-1/2 w-5 h-5 text-gray-400 -translate-y-1/2" />
-                <input id="name" {...register('name', { required: 'Name is required' })} type="text" placeholder="Your full name*" className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} aria-invalid={errors.name ? 'true' : 'false'} />
+                <input id="name" {...register('name', { required: 'Name is required', maxLength: { value: 120, message: "Name too long" } })} type="text" placeholder="Your full name*" className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border-red-500' : 'border-gray-300'}`} aria-invalid={errors.name ? 'true' : 'false'} />
                 {errors.name && <p className="mt-1 text-sm text-red-600" role="alert">{errors.name.message}</p>}
               </div>
+
               {/* Mobile */}
               <div className="relative">
                 <label htmlFor="mobile" className="sr-only">Mobile number</label>
@@ -185,6 +226,7 @@ export default function BookDemoForm(): JSX.Element {
                 <input id="mobile" {...register('mobile', { required: 'Mobile number is required', pattern: { value: /^[0-9+()\s-]{7,20}$/, message: 'Invalid phone number' } })} type="tel" placeholder="Mobile number*" className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.mobile ? 'border-red-500' : 'border-gray-300'}`} aria-invalid={errors.mobile ? 'true' : 'false'} />
                 {errors.mobile && <p className="mt-1 text-sm text-red-600" role="alert">{errors.mobile.message}</p>}
               </div>
+
               {/* Email */}
               <div className="relative">
                 <label htmlFor="email" className="sr-only">Email address</label>
@@ -192,6 +234,7 @@ export default function BookDemoForm(): JSX.Element {
                 <input id="email" {...register('email', { pattern: { value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: 'Invalid email address' } })} type="email" placeholder="Email (optional)" className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`} aria-invalid={errors.email ? 'true' : 'false'} />
                 {errors.email && <p className="mt-1 text-sm text-red-600" role="alert">{errors.email.message}</p>}
               </div>
+
               {/* Requirement */}
               <Controller control={control} name="requirement" render={({ field }) => (
                 <Listbox as="div" {...field}>
@@ -210,11 +253,13 @@ export default function BookDemoForm(): JSX.Element {
                   </div>
                 </Listbox>
               )} />
+
               {/* Message */}
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message (optional)</label>
                 <textarea id="message" {...register('message')} rows={4} placeholder="Tell us more about your project..." className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
               </div>
+
               {/* Submit */}
               <div className="text-center">
                 <button type="submit" disabled={isSubmitting} className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition disabled:opacity-50">
@@ -227,7 +272,7 @@ export default function BookDemoForm(): JSX.Element {
           {/* Map Container */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
             <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
-              <div ref={mapRef} className="w-full h-64" />
+              <div ref={mapRef} className="w-full h-64" aria-hidden="true" />
               <div className="p-6 text-center">
                 <address className="not-italic mb-4">
                   <MapPinIcon className="inline w-5 h-5 mr-2 text-blue-600" />
@@ -244,3 +289,4 @@ export default function BookDemoForm(): JSX.Element {
     </>
   );
 }
+
