@@ -101,7 +101,7 @@ export default function RootLayout({
       style={{ scrollBehavior: "smooth" }}
     >
       <body className="antialiased">
-        <ClerkProvider>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_Y2xlcmsua2FtaXl0ZWNoLmNvbSQ"}>
           {children}
           <Analytics />
 

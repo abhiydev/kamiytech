@@ -1,7 +1,7 @@
 // import Image from "next/image";
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
-import OurServices from "@/components/OurServicesd";
+import OurServices from "@/components/OurServices";
 import GoogleForm from "@/components/GoogleForm";
 import Image from "next/image";
 import Footer from "@/components/Footer";

@@ -1,10 +1,15 @@
 'use client'
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import api from '@/lib/axios'
-import { CldUploadButton } from 'next-cloudinary'
 import Image from 'next/image'
+
+const CldUploadButton = dynamic(
+  () => import('next-cloudinary').then((mod) => mod.CldUploadButton),
+  { ssr: false }
+)
 
 const AddBlog = () => {
   const [title, setTitle] = useState('')
@@ -93,8 +98,8 @@ const AddBlog = () => {
             </label>
 
             <CldUploadButton
-              uploadPreset="ml_default" // Replace with your Cloudinary preset
-              options={{ multiple: false }}
+              uploadPreset="ml_default"
+              options={{ multiple: false, cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "kamiytech" }}
               onSuccess={(result) => {
                 if (
                   typeof result?.info === 'object' &&

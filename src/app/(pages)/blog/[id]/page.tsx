@@ -1,122 +1,61 @@
-'use client'
+import type { Metadata } from "next";
+import dbConnect from "@/app/db/dbConnect";
+import Blog from "@/app/db/models/Blog";
+import BlogDetailClient from "./BlogDetailClient";
 
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Image from 'next/image'
-import api from '@/lib/axios'
+type BlogPageProps = {
+  params: Promise<{ id: string }>;
+};
 
-type BlogType = {
-  _id: string
-  title: string
-  desc: string
-  imageURL?: string
-  createdAt: string
-}
+export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
+  const { id } = await params;
+  let title = "Blog Post | KamiyTech";
+  let description = "Read tech and software development insights from KamiyTech.";
+  let imageUrl = "https://kamiytech.com/logo.png";
 
-const BlogDetails = () => {
-  const { id } = useParams()
-  const [blog, setBlog] = useState<BlogType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!id) return
-
-    const fetchBlog = async () => {
-      try {
-        setLoading(true)
-        const res = await api.get(`/api/blog?id=${id}`)
-        if (res.data?.success && res.data?.blog) {
-          setBlog(res.data.blog)
-        } else {
-          setError('Blog not found.')
-        }
-      } catch (err) {
-        console.error('Error fetching blog:', err)
-        setError('Failed to load blog.')
-      } finally {
-        setLoading(false)
+  try {
+    await dbConnect();
+    const blog = await Blog.findById(id);
+    if (blog) {
+      title = `${blog.title} | KamiyTech Blog`;
+      description = blog.desc ? blog.desc.substring(0, 160) : description;
+      if (blog.imageURL && blog.imageURL.startsWith("http")) {
+        imageUrl = blog.imageURL;
       }
     }
-
-    fetchBlog()
-  }, [id])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center text-center">
-          <p className="text-gray-500 text-lg">Loading blog...</p>
-        </main>
-        <Footer />
-      </div>
-    )
+  } catch (err) {
+    console.error("Error generating metadata for blog post:", err);
   }
 
-  if (error || !blog) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
-        <Navbar />
-        <main className="flex-1 flex flex-col items-center text-center px-4 py-20">
-          <h2 className="text-4xl font-bold mb-6">Blog Not Found</h2>
-          <p className="text-lg text-gray-600">{error || 'Something went wrong.'}</p>
-          <Link
-            href="/blog"
-            className="mt-6 inline-block bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition"
-          >
-            Back to Blogs
-          </Link>
-        </main>
-        <Footer />
-      </div>
-    )
-  }
-
-  // ✅ Determine correct image source (supports both Cloudinary and local uploads)
-  const getImageSrc = (url?: string) => {
-    if (!url) return ''
-    if (url.startsWith('http')) return url // Cloudinary or external
-    if (url.startsWith('/')) return url // Local public upload
-    return `/uploads/${url}` // fallback for legacy uploads
-  }
-
-  return (
-    <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
-      <Navbar />
-
-      <main className="flex-1 flex flex-col items-center text-center px-4 py-20">
-        <h2 className="text-4xl font-bold mb-6">{blog.title}</h2>
-
-        {blog.imageURL && (
-          <div className="relative w-full max-w-3xl h-[400px] mb-6">
-            <Image
-              src={getImageSrc(blog.imageURL)}
-              alt={blog.title}
-              fill
-              className="rounded-lg object-cover"
-            />
-          </div>
-        )}
-
-        <p className="text-lg max-w-3xl mb-8 text-gray-600 whitespace-pre-line">
-          {blog.desc}
-        </p>
-
-        <Link
-          href="/blog"
-          className="mt-6 inline-block bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition"
-        >
-          Back to Blogs
-        </Link>
-      </main>
-
-      <Footer />
-    </div>
-  )
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://kamiytech.com/blog/${id}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://kamiytech.com/blog/${id}`,
+      siteName: "KamiyTech",
+      type: "article",
+      images: [{ url: imageUrl }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
 }
 
-export default BlogDetails
+export default async function BlogDetailPage({ params }: BlogPageProps) {
+  const { id } = await params;
+
+  return (
+    <>
+      <BlogDetailClient id={id} />
+    </>
+  );
+}

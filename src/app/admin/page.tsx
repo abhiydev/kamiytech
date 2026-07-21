@@ -1,76 +1,104 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from 'next/link';
+import React from 'react';
 
 const AdminPanel = () => {
+  const features = [
+    {
+      name: "leads",
+      title: "Leads Management",
+      desc: "View, manage, and delete incoming sales leads",
+      active: true,
+    },
+    {
+      name: "inquiry",
+      title: "Inquiries",
+      desc: "View and manage organic website inquiries",
+      active: true,
+    },
+    {
+      name: "blog",
+      title: "Blog CMS",
+      desc: "Create, view, and delete blog posts",
+      active: true,
+    },
+    {
+      name: "projects",
+      title: "Projects",
+      desc: "View and update portfolio projects",
+      active: false,
+    },
+    {
+      name: "services",
+      title: "Services",
+      desc: "Manage offered service packages",
+      active: false,
+    },
+    {
+      name: "users",
+      title: "Users",
+      desc: "Manage admin users and permissions",
+      active: false,
+    },
+    {
+      name: "settings",
+      title: "Settings",
+      desc: "Configure global site settings",
+      active: false,
+    },
+  ];
 
-    const features = [
-        {
-            name: "leads",
-            desc: "view, add, and delete leads"
-        },
-        {
-            name: "inquiry", // Corrected spelling from "Garbadge" to "Garbage"
-            desc: "view, organic inquiries" // Updated description for clarity
-        },
-        {
-            name: "blog",
-            desc: "view, add, and delete blog posts"
-        },
-        {
-            name: "projects",
-            desc: "view, add, and delete projects"
-        },
-        {
-            name: "services",
-            desc: "view, add, and delete services"
-        },
-        {
-            name: "users",
-            desc: "view, add, and delete users"
-        },
-        {
-            name: "settings",
-            desc: "update site settings"
-        }
-    ]
-
-    return (
-        <div
-            className='bg-secondery' // Corrected class name from 'bg-secon' to 'bg-sec' assuming 'bg-sec' is the intended class
-        >
-            <h1 className='text-2xl font-bold px-4 mx-10 '>
-                Admin Panel
-            </h1>
-            <div
-                className='grid md:grid-cols-3 grid-rows-1 gap-4 mx-10 my-2'
-            >
-            {
-                features.map((feature) => { // Added parameter 'feature' to access individual feature properties
-                    return (
-                        <div
-                        key={feature.name} // Changed to use 'feature.name' instead of 'features.name'
-                        className='p-4 border rounded-xl hover:bg-slate-700 '
-                        >
-                            <Link
-                                href={'/admin/'+feature.name} // This link should be dynamic based on feature if needed
-                                className=''
-                            >
-                                <h1 className='text-xl font-semibold'>
-                                    {feature.name} 
-                                </h1>
-                                <div className='mt-2'>
-                                    {feature.desc} 
-                                </div>
-                            </Link>
-                        </div>
-                    )
-                })
-            }
-
-            </div>
-
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
+          <h1 className="text-3xl font-extrabold text-white">KamiyTech Admin Portal</h1>
+          <Link
+            href="/"
+            className="text-sm px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition"
+          >
+            ← Back to Site
+          </Link>
         </div>
-    )
-}
 
-export default AdminPanel
+        <div className="grid md:grid-cols-3 gap-6">
+          {features.map((feature) => (
+            <div
+              key={feature.name}
+              className={`p-6 border rounded-2xl transition duration-200 ${
+                feature.active
+                  ? "border-slate-800 bg-slate-900/80 hover:border-blue-500 hover:bg-slate-900 shadow-lg"
+                  : "border-slate-800/40 bg-slate-950/40 opacity-60 cursor-not-allowed"
+              }`}
+            >
+              {feature.active ? (
+                <Link href={`/admin/${feature.name}`} className="block group">
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold text-white group-hover:text-blue-400 transition">
+                      {feature.title}
+                    </h2>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Active
+                    </span>
+                  </div>
+                  <p className="mt-3 text-slate-400 text-sm">{feature.desc}</p>
+                </Link>
+              ) : (
+                <div>
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-bold text-slate-400">{feature.title}</h2>
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                      Coming Soon
+                    </span>
+                  </div>
+                  <p className="mt-3 text-slate-500 text-sm">{feature.desc}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminPanel;

@@ -1,10 +1,19 @@
 import { Schema, model, models, Types } from "mongoose";
 
-const leadCommentsSchema = new Schema(
+export interface ILeadComment {
+  _id?: string;
+  leadId: Types.ObjectId | string;
+  disposition: string;
+  comment: string;
+  author: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const leadCommentsSchema = new Schema<ILeadComment>(
   {
-    // Reference to the Lead collection
     leadId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Lead",
       required: true,
     },
@@ -16,8 +25,6 @@ const leadCommentsSchema = new Schema(
       type: String,
       required: true,
     },
-    // If you just want the author's name, leave as String.
-    // But to reference a User document you could switch this to ObjectId too.
     author: {
       type: String,
       required: true,
@@ -27,6 +34,6 @@ const leadCommentsSchema = new Schema(
 );
 
 const LeadComments =
-  models.LeadComments || model("LeadComments", leadCommentsSchema);
+  models.LeadComments || model<ILeadComment>("LeadComments", leadCommentsSchema);
 
 export { LeadComments };
